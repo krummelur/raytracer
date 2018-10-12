@@ -17,11 +17,11 @@ public class Main {
     Camera camera = new Camera(new Vector3(2,0, 0), new Vector3(-1,0,0));
     Renderer renderer = new Renderer(new World(), camera);
     renderer.world.addObject3d(new Sphere(new Vector3(0,0, 0), 1));
-    renderer.world.addObject3d(new Sphere(new Vector3(-0.5,1,0), 0.5));
-    renderer.world.addObject3d(new Sphere(new Vector3(0.5,-1,0), 0.5));
-    renderer.world.addObject3d(new Sphere(new Vector3(-0.5,0,1), 0.5));
-    renderer.world.addObject3d(new Sphere(new Vector3(0.5,0,-1), 0.5));
-    PointLight light1 = new PointLight(new Vector3(0, 10,0),100, new Vector3(0,1,0));
+    renderer.world.addObject3d(new Sphere(new Vector3(0.5,1,0), 0.5));
+    renderer.world.addObject3d(new Sphere(new Vector3(-0.5,-1,0), 0.5));
+    renderer.world.addObject3d(new Sphere(new Vector3(0.5,0,1), 0.5));
+    renderer.world.addObject3d(new Sphere(new Vector3(-0.5,0,-1), 0.5));
+    PointLight light1 = new PointLight(new Vector3(0, 5,0),100, new Vector3(0,1,0));
     PointLight light2 = new PointLight(new Vector3(10,0 ,0),50, new Vector3(0,1,0.5));
     renderer.world.addLight(light1);
     renderer.world.addLight(light2);

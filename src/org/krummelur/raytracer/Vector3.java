@@ -77,4 +77,8 @@ public class Vector3 {
 	public Vector3 clampNegative() {
 	    return new Vector3(Math.max(this.x, 0), Math.max(this.y, 0), Math.max(this.z, 0));
     }
+
+    public Vector3 clampMaximum(double max) {
+        return new Vector3(Math.min(this.x, max), Math.min(this.y, max), Math.min(this.z, max));
+    }
 }
