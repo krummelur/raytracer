@@ -94,7 +94,7 @@ public class Renderer {
                     Vector3 lightToSurfaceNormal = hitLocation.subtract(l.location).normalize();
                     double dot = -1 * surfaceNormal.dot(lightToSurfaceNormal);
                     if (dot > 0) {
-                        surfaceColor = surfaceColor.add(l.color.multiply(l.strength * 10 / hitLocation.distance(l.location)).multiply(dot));
+                        surfaceColor = surfaceColor.add(l.color.multiply(l.strength * 10 / hitLocation.distance(l.location)).multiply(dot).multiply(closestObject.color));
 
                         //add specular light
                         Vector3 surfaceToCameraDir = hitLocation.subtract(cameraRay.origin).normalize();
@@ -102,7 +102,7 @@ public class Renderer {
                         double specular = -1 * surfaceToCameraDir.dot(reflectionDirection);
                         if (specular > 0) {
                             specular = Math.abs(specular);
-                            specular = Math.pow(specular, 15);
+                            specular = Math.pow(specular, 20);
                             specular *= 2;
                             surfaceColor = surfaceColor.add(new Vector3(specular, specular, specular).multiply(l.strength));
                             returnRay = new Ray(hitLocation, cameraRay.direction.reflect(surfaceNormal));
@@ -111,7 +111,7 @@ public class Renderer {
                     }
                 }
                 returnRay = new Ray(hitLocation, cameraRay.direction.reflect(surfaceNormal));
-                returnRay.origin=returnRay.travel(0.01);
+                returnRay.origin=returnRay.travel(epsilon);
             }
             //world.objects.forEach();
         }

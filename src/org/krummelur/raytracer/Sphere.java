@@ -4,10 +4,16 @@ public class Sphere extends Shape3d {
 	private final double epsilon = 0.000001;
 
 	double radius;
-	
-	public Sphere(Vector3 location, double radius) {
+
+
+	public Sphere(Vector3 location, double radius, Vector3 color) {
 		this.radius = radius;
 		this.location = location;
+		this.color = color;
+	}
+
+	public Sphere(Vector3 location, double radius) {
+		this(location, radius, new Vector3(1,1,1));
 	}
 
 	//Ray must be normalized
