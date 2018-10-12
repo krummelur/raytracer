@@ -12,8 +12,8 @@ public class Renderer {
 
     private final double epsilon = 0.00001;
     World world;
-    int resolutionX = 1024;
-    int resolutionY = 1024;
+    int resolutionX = 2048;
+    int resolutionY = 2048;
     int image[] = new int[resolutionY * resolutionY];
     Camera camera;
 
@@ -23,19 +23,19 @@ public class Renderer {
     }
 
     void render() {
-        for (int performanceLoops = 0; performanceLoops< 10; performanceLoops++) {
+        for (int performanceLoops = 0; performanceLoops< 1; performanceLoops++) {
 
             long startTime = System.nanoTime();
             for (int y = 0; y < resolutionY; y++)
                 for (int x = 0; x < resolutionX; x++) {
-                    double reflectivityFactor = 0.7;
+                    double reflectivityFactor = 0.5;
                     //calculate if the ray hit any object, and at what distance
                     Ray cameraRay = new Ray(this.camera.location
                             .add(this.camera.lookPlane.up.multiply((this.camera.orthogonalSize / 2) - ((double) (y) / (double) (resolutionY) * this.camera.orthogonalSize))
                                     .add(this.camera.lookPlane.right.multiply((this.camera.orthogonalSize / 2) - ((double) (x) / (double) (resolutionX) * this.camera.orthogonalSize)))),
                             camera.direction);
                     Vector3 surfaceColor = Vector3.ZERO();
-                    int maxIterations = 5;
+                    int maxIterations = 20;
                     for (int iterations = 0; iterations < maxIterations && cameraRay != null; iterations++) {
                         Pair<Vector3, Ray> results = getColorForRay(cameraRay);
                         cameraRay = results.getValue();
