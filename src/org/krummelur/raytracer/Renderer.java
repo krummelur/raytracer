@@ -12,9 +12,10 @@ public class Renderer {
 
     private final double epsilon = 0.00001;
     World world;
-    int resolutionX = 2048;
-    int resolutionY = 2048;
+    int resolutionX = 256;
+    int resolutionY = 256;
     int image[] = new int[resolutionY * resolutionY];
+    BufferedImage bi = new BufferedImage(resolutionY, resolutionX, BufferedImage.TYPE_INT_RGB);
     Camera camera;
 
     public Renderer(World world, Camera camera) {
@@ -22,9 +23,13 @@ public class Renderer {
         this.camera = camera;
     }
 
-    void render() {
-        for (int performanceLoops = 0; performanceLoops< 1; performanceLoops++) {
+    BufferedImage getImage() {
+        return bi;
+    }
 
+    int render(RenderWindow window) {
+        for (int performanceLoops = 0; performanceLoops <  1; performanceLoops++) {}
+            window.start();
             long startTime = System.nanoTime();
             for (int y = 0; y < resolutionY; y++)
                 for (int x = 0; x < resolutionX; x++) {
@@ -45,18 +50,18 @@ public class Renderer {
                     surfaceColor = surfaceColor.clampMaximum(255);
                     image[resolutionX * y + x] = new Color((int) (surfaceColor.x), (int) (surfaceColor.y), (int) (surfaceColor.z)).getRGB();
                 }
+            bi.setRGB(0, 0, resolutionX, resolutionY, this.image, 0, resolutionX);
             long endTime = System.nanoTime();
-            System.out.println((endTime - startTime) / 1000000);
-        }
-
-        BufferedImage testImage = new BufferedImage(resolutionY, resolutionX, BufferedImage.TYPE_INT_RGB);
-        testImage.setRGB(0, 0, resolutionX, resolutionY, image, 0, resolutionX);
-        File outputfile = new File("image.png");
-        try {
-            ImageIO.write(testImage, "png", outputfile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        System.out.println(((endTime - startTime) / 1000000));
+        return (int)((endTime - startTime) / 1000000);
+            /*
+            File outputfile = new File("image"  + performanceLoops + ".png");
+            try {
+                ImageIO.write(bi, "png", outputfile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            */
     }
 
     Pair<Vector3, Ray> getColorForRay(Ray cameraRay) {
