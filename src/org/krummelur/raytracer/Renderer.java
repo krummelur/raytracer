@@ -7,13 +7,16 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 
 public class Renderer {
 
     private final double epsilon = 0.00001;
     World world;
-    int resolutionX = 256;
-    int resolutionY = 256;
+    int resolutionX = 512;
+    int resolutionY = 512;
     int image[] = new int[resolutionY * resolutionY];
     BufferedImage bi = new BufferedImage(resolutionY, resolutionX, BufferedImage.TYPE_INT_RGB);
     Camera camera;
@@ -28,10 +31,11 @@ public class Renderer {
     }
 
     int render(RenderWindow window) {
+
         for (int performanceLoops = 0; performanceLoops <  1; performanceLoops++) {}
-            window.start();
+            Collections.sort(world.objects, (o1, o2) -> (int)(camera.location.distanceSquared(o1.location)-o1.radius*o1.radius - camera.location.distanceSquared(o2.location)-o2.radius*o2.radius));
             long startTime = System.nanoTime();
-            for (int y = 0; y < resolutionY; y++)
+            for (int y = 0; y < resolutionY; y++) {
                 for (int x = 0; x < resolutionX; x++) {
                     double reflectivityFactor = 0.5;
                     //calculate if the ray hit any object, and at what distance
@@ -40,7 +44,7 @@ public class Renderer {
                                     .add(this.camera.lookPlane.right.multiply((this.camera.orthogonalSize / 2) - ((double) (x) / (double) (resolutionX) * this.camera.orthogonalSize)))),
                             camera.direction);
                     Vector3 surfaceColor = Vector3.ZERO();
-                    int maxIterations = 20;
+                    int maxIterations = 5;
                     for (int iterations = 0; iterations < maxIterations && cameraRay != null; iterations++) {
                         Pair<Vector3, Ray> results = getColorForRay(cameraRay);
                         cameraRay = results.getValue();
@@ -50,10 +54,12 @@ public class Renderer {
                     surfaceColor = surfaceColor.clampMaximum(255);
                     image[resolutionX * y + x] = new Color((int) (surfaceColor.x), (int) (surfaceColor.y), (int) (surfaceColor.z)).getRGB();
                 }
+            }
             bi.setRGB(0, 0, resolutionX, resolutionY, this.image, 0, resolutionX);
             long endTime = System.nanoTime();
-        System.out.println(((endTime - startTime) / 1000000));
-        return (int)((endTime - startTime) / 1000000);
+            System.out.println(((endTime - startTime) / 1000000));
+            window.start();
+            return (int)((endTime - startTime) / 1000000);
             /*
             File outputfile = new File("image"  + performanceLoops + ".png");
             try {
@@ -71,11 +77,19 @@ public class Renderer {
         Shape3d closestObject = null;
         double closestHit = Integer.MAX_VALUE;
         Vector3 surfaceColor = Vector3.ZERO();
+
+        //we can optimize a bit and sort the spheres after their distance to camera ((distancesqr-radius))
+        //then stop the process as soon as we find a hit.
+
+
+
         for (Shape3d o : world.objects()) {
             double hit = o.hit(cameraRay);
             if (hit != -1 && hit < closestHit) {
                 closestHit = hit;
                 closestObject = o;
+                //This is not beautiful, but having the nice syntax of enhanced for loop makes it sort of ok
+                break;
             }
         }
         //if there was a hit calculate lighing
@@ -102,17 +116,17 @@ public class Renderer {
                         surfaceColor = surfaceColor.add(l.color.multiply(l.strength * 10 / hitLocation.distance(l.location)).multiply(dot).multiply(closestObject.color));
 
                         //add specular light
+
                         Vector3 surfaceToCameraDir = hitLocation.subtract(cameraRay.origin).normalize();
                         Vector3 reflectionDirection = lightToSurfaceNormal.reflect(surfaceNormal).normalize();
                         double specular = -1 * surfaceToCameraDir.dot(reflectionDirection);
                         if (specular > 0) {
-                            specular = Math.abs(specular);
-                            specular = Math.pow(specular, 20);
-                            specular *= 2;
-                            surfaceColor = surfaceColor.add(new Vector3(specular, specular, specular).multiply(l.strength));
+                            specular = Math.pow(specular, 120);
+                            surfaceColor = surfaceColor.add(new Vector3(specular, specular, specular).multiply(l.strength*2));
                             returnRay = new Ray(hitLocation, cameraRay.direction.reflect(surfaceNormal));
                             returnRay.origin=returnRay.travel(0.01);
                         }
+
                     }
                 }
                 returnRay = new Ray(hitLocation, cameraRay.direction.reflect(surfaceNormal));

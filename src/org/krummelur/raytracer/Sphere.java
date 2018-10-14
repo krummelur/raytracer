@@ -1,9 +1,7 @@
 package org.krummelur.raytracer;
 
-public class Sphere extends Shape3d {
+public class Sphere extends Shape3d implements BehaviourObject{
 	private final double epsilon = 0.000001;
-
-	double radius;
 
 
 	public Sphere(Vector3 location, double radius, Vector3 color) {
@@ -37,7 +35,17 @@ public class Sphere extends Shape3d {
 	}
 
 	@Override
+	public Vector3[] AABB() {
+		return new Vector3[]{this.location.subtract(radius), this.location.add(radius)};
+	}
+
+	@Override
 	Vector3 surfaceNormal(Vector3 point) {
 		return point.subtract(this.location).divide(this.radius);
+	}
+
+	@Override
+	public void update(double deltaTime) {
+
 	}
 }

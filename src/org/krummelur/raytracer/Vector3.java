@@ -23,8 +23,16 @@ public class Vector3 {
         return new Vector3(this.x + other.x, this.y + other.y, this.z + other.z);
     }
 
+    public Vector3 add(double d) {
+        return new Vector3(this.x + d, this.y + d, this.z + d);
+    }
+
     public Vector3 subtract(Vector3 other) {
         return new Vector3(this.x - other.x, this.y - other.y, this.z - other.z);
+    }
+
+    public Vector3 subtract(double d) {
+        return new Vector3(this.x - d, this.y - d, this.z - d);
     }
 
     public double distance(Vector3 other) {
@@ -48,6 +56,10 @@ public class Vector3 {
 
     public Vector3 divide(double d) {
         return new Vector3(this.x / d, this.y / d, this.z / d);
+    }
+
+    public Vector3 divide(Vector3 other) {
+        return new Vector3(this.x / other.x, this.y / other.y, this.z / other.z);
     }
 
     public Vector3 normalize() {
