@@ -10,16 +10,16 @@ public class Main {
 
     void start() {
         ArrayList<BehaviourObject> updatable = new ArrayList<>();
-        //Camera camera = new Camera(new Vector3(-1/sqrt3,-1/sqrt3, -1/sqrt3), new Vector3(1/sqrt3,1/sqrt3, 1/sqrt3));
 
         //Spinning camera
         Camera camera = new Camera(new Vector3(1,0,0), new Vector3(-1,0,0)) {
             @Override
             public void update(double deltaTime) {
-                Vector3 rotationDelta = new Vector3(0.05, 0.05,0);
+                Vector3 rotationDelta = new Vector3(0.1, 0.0,0);
                 rotate(rotationDelta.multiply(deltaTime));
             }
         };
+
         updatable.add(camera);
         Renderer renderer = new Renderer(new World(), camera);
 
@@ -35,7 +35,7 @@ public class Main {
         Sphere spinningSphere = new Sphere(new Vector3(0,0,-1), 0.5, new Vector3(1,0,1)) {
             @Override
             public void update(double deltaTime) {
-               this.location = new Vector3(Math.sin(elapsedTime/1200.0), 0, Math.cos(elapsedTime/1200.0));
+              this.location = new Vector3(Math.sin(elapsedTime/1200.0), 0, Math.cos(elapsedTime/1200.0));
             }
         };
         updatable.add(spinningSphere);
@@ -64,8 +64,6 @@ public class Main {
         renderer.world.addLight(light2);
         renderer.world.addLight(light3);
         updatable.add(light3);
-        OrthogonalSet ortho = new OrthogonalSet(new Vector3(1,0,0));
-        System.out.println(ortho);
 
         RenderWindow window = new RenderWindow(renderer.getImage());
         loop(renderer, window, updatable);

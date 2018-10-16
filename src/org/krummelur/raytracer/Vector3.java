@@ -39,6 +39,10 @@ public class Vector3 {
         return Math.sqrt(distanceSquared(other));
     }
 
+    double lengthSquared() {
+        return this.distanceSquared(Vector3.ZERO());
+    }
+
     public double distanceSquared(Vector3 other) {
         Vector3 delta = subtract(other);
         double edge1Sqrd = (delta.y * delta.y) + (delta.z * delta.z);
@@ -68,7 +72,7 @@ public class Vector3 {
 
     @Override
     public String toString() {
-        return "{" + x + ", " + ", " + y + ", " + ", " + z + "}";
+        return "{ "+ x + ", " +  y + ", "  + z + "}";
     }
 
     public Vector3 multiply(Vector3 other) {

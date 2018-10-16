@@ -3,6 +3,9 @@ package org.krummelur.raytracer;
 
 public class OrthogonalSet {
 
+    private boolean flipUp = false;
+    private boolean flipRight = false;
+
     final double Deg_To_Rad = Math.PI/180;
     final double Rad_To_Deg = 180/Math.PI;
     Vector3 forward, up, right;
@@ -15,12 +18,19 @@ public class OrthogonalSet {
         //yaw, pitch, roll
         degrees  = degrees.multiply(Deg_To_Rad);
         //degrees.x = Math.PI/2;
-        double x = Math.sin(Math.asin(this.forward.x)+degrees.x*Deg_To_Rad);
-        double y = Math.cos(Math.acos(this.forward.y)+degrees.y*Deg_To_Rad);
-        x = this.forward.x *Math.cos(degrees.x) - this.forward.y*Math.sin(degrees.x);
-        y = this.forward.x *Math.sin(degrees.x) + this.forward.y*Math.cos(degrees.x);
+
+        //rotate z axis
+        double x = this.forward.x *Math.cos(degrees.x) - this.forward.y*Math.sin(degrees.x);
+        double y = this.forward.x *Math.sin(degrees.x) + this.forward.y*Math.cos(degrees.x);
+
+        //rotate y axis
+        x = x*Math.cos(degrees.y) + this.forward.z*Math.sin(degrees.y);
+        double z = -x*Math.sin(degrees.y) + this.forward.z*Math.cos(degrees.y);
+        Vector3 before = new Vector3(this.forward.x, this.forward.y, this.forward.z);
         this.forward.x = x;
         this.forward.y = y;
+        this.forward.z = z;
+        this.forward = this.forward.normalize();
         recalculate();
     }
 
@@ -29,25 +39,10 @@ public class OrthogonalSet {
         Vector3 normalizedforwardXY = new Vector3(forward.x, forward.y, 0).normalize();
         double thetaForward = Math.asin(normalizedforwardXY.y);
         thetaForward = Math.atan2(normalizedforwardXY.x, normalizedforwardXY.y);
-        //2 cos / sin, could be performance hog
-        right = new Vector3(Math.sin(thetaForward-(Math.PI / 2)),Math.cos(thetaForward-(Math.PI / 2)), 0).normalize();
-        double thetaRight = Math.atan2(right.x, right.y);
-   //     System.out.println((thetaForward)*Rad_To_Deg);
-   //     System.out.println((thetaRight)*Rad_To_Deg);
-        //System.out.println(this);
 
-//        double rx = normalizedforwardXY.x * Math.cos(90) - normalizedforwardXY.y * Math.sin(90);
-//        double ry = normalizedforwardXY.x * Math.sin(90) + normalizedforwardXY.y * Math.cos(90);
-//        right.x = rx;
-//        right.y =ry;
-
-        //right = new Vector3(thetaForward,thetaForward, 0);
-
-
-        //this.right = new Vector3(forward.x*xSign, forward.y*ySign, 0).normalize();
-
-        //up vector is gotten by crossing forward with right, making up a new proper (with real yaw) up vector
+        right = new Vector3(Math.sin(thetaForward-(Math.PI / 2)),Math.cos(thetaForward-(Math.PI / 2)), 0).normalize().multiply(flipRight ? -1 : 1);
         this.up = forward.cross(right).normalize();
+        System.out.println(this);
     }
 
 
